@@ -1,12 +1,11 @@
 /**
- * Takes in 2 numbers, returns their sum
+ * Takes in 2 numbers, returns the larger number
  * @param {number} a
- * @param {number} b
  * @returns {number}
  */
 
 const solution = (a, b) => {
-  return 0;
+  return a > b ? a : b;
 };
 
 module.exports = {

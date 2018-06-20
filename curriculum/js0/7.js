@@ -1,12 +1,12 @@
 /**
- * Takes in 2 numbers, returns their sum
+ * Takes in 2 numbers, return true if their sum is greater than 10
  * @param {number} a
  * @param {number} b
- * @returns {number}
+ * @returns {boolean}
  */
 
 const solution = (a, b) => {
-  return 0;
+  return a + b > 10;
 };
 
 module.exports = {
