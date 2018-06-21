@@ -6,8 +6,18 @@
  * @returns {array}
  */
 
-const solution = (a) => {
-  return [];
+const isPrime = (a, i = 2) => {
+  if (a === 1) return false;
+  if (i >= a) return true;
+  if (!(a%i)) {
+    return false;
+  }
+  return isPrime(a, i + 1);
+};
+const solution = (a, i = 0) => {
+  if (i >= a.length) return a;
+  a[i] = isPrime(a[i]) ? a[i] : 1;
+  return solution(a, i + 1);
 };
 
 module.exports = {

@@ -4,9 +4,11 @@
  */
 
 const solution = () => {
-  Array.prototype.gsReduce = function () {
-    // To get the actual array, use this
-    return [];
+  Array.prototype.gsReduce = function(cb, init) {
+      for (let i = 0; i < this.length; i++) {
+        init = cb(init, this[i], i, this);
+      }
+    return init
   };
 };
 
