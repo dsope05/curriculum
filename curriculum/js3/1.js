@@ -4,8 +4,10 @@
  * @returns {number} max
  */
 
-const solution = (obj)=>{
-  return 0;
+const solution = (obj, i = 0, values = Object.values(obj), max = values[0])=>{
+  if (i >= values.length) return max;
+  max = values[i] > max ? values[i] : max;
+  return solution(obj, i + 1, values, max);
 }
 
 module.exports = {

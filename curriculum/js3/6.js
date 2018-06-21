@@ -9,8 +9,11 @@
  * @returns {object} c
 */
 
-const solution = (a, b)=>{
-  return c;
+const solution = (a, b, keys = Object.keys(a), i = 0, obj = {})=>{
+  if (!keys.length) return {};
+  if (i >= keys.length) return obj;
+  if (b(keys[i], a[keys[i]])) Object.assign(obj, {[keys[i]]: a[keys[i]]});
+  return solution(a, b, keys, i + 1, obj);
 };
 
 module.exports = {
