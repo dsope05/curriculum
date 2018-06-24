@@ -14,8 +14,12 @@
 */
 
 // Hint: BFS or DFS from the teaching doc
-const solution = (a)=>{
-  return a;
+const solution = (a, b, i = 0, children = [])=>{
+  if (!a) return null;
+  if (a.children) children = a.children.concat(children);
+  if (a.v === b) return a;
+
+  return solution(children.pop(), b, i + 1, children);
 };
 
 module.exports = {
