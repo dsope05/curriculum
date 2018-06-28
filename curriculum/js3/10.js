@@ -20,22 +20,21 @@
 // This problem is pretty hard, you just have
 // to understand whats going on and look at it over
 // and over again until you can write it out yourself
-const bft = (cur=[], next=[], result=[]) => {
-  if (!cur.length && !next.length) return result;
-  if (!cur.length) {
-    result.push([]);
-    return bft(next, [], result);
+
+const solution = (n, sol=[[n.v]], children=[], children1=[]) => {
+  if (!n) return sol;
+  if (n.children.length) children1 = children1.concat(n.children);
+  if (!children.length) {
+    if (children1.length) {
+      sol.push(children1.map((child)=> child.v));
+    }
+    children = children1;
+    children1 = [];
   }
-  const n = cur.shift();
-  result[result.length-1].push(n.v);
-  return bft(cur, next.concat(n.children), result);
+  return solution(children.pop(), sol, children, children1);
 };
 
-const solution = (n)=>{
-  return bft([], [n]);
-};
-
-module.exports = {
-  solution,
-};
+  module.exports = {
+    solution,
+  };
 
