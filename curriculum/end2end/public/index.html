@@ -3,52 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
-  <script>
-      const user = document.cookie.split('name=')[1];
-  </script>
 </head>
 <body>
-  <div>
-    <button id="logout"> logout </button>
-    <h2> Chat with me </h2>
-    <textarea id="textArea" rows="4" cols="50">
-      </textArea>
+  <form action="/upload" method="post" enctype="multipart/form-data">
     <div>
-      <button id="subBtn"> submit </button>
+      <label for="file">Choose file to upload</label>
+      <input type="file" id="file" name="file" multiple>
     </div>
-    <h2> Chat Area </h2>
-    <div id="chatMessages"/>
-  </div>
+    <div>
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+  <p/>
+  <div id="filesDiv"/>
   <script>
-    const subBtn = document.getElementById('subBtn');
-    subBtn.onclick = () => {
-      const message = document.getElementById('textArea').value;
-      fetch(`/newmessage?name=${user}&message=${message}`).then( r => r.json()).then(messages => {
-        render(messages);
-    })
-    }
-    setInterval(()=> 
-        fetch('/getMessages', { credentials: 'include'}).then( r => r.json() ).then(messages => {
-        render(messages);
-      }) 
-        , 1000)
-  </script>
-  <script>
-    const render = (messages) => {
-        const chatMessages = document.getElementById('chatMessages') 
-          const mappedMessages = messages.map(message => `<div> ${message.name} : ${message.message }</div>`)
-          let messageList = '';
-        mappedMessages.forEach(message=> messageList += message)
-          chatMessages.innerHTML = messageList;
-    }
-    document.getElementById('logout').onclick = () => {
-      fetch(`/logout`, { credentials: 'include' }).then(data => {
-        if(data.status = 200) {
-          window.location = '/login';
-        }
-    })
-
-    }
+  const filesDiv = document.getElementById('filesDiv');
+  fetch(`/files`)
+  .then( r=> r.json()).then((data) => {
+    const names = data.map(val => `<div> ${val} </div>`).join(''); 
+    filesDiv.innerHTML = names;
+  }).catch(err=> console.log('err', err))
   </script>
 </body>
 </html>
