@@ -4,14 +4,12 @@
   <meta charset="UTF-8">
   <title></title>
   <script>
-const user = prompt("Please enter your name:", "Harry Potter");
-    if (user == null || user == "") {
-      txt = "User cancelled the prompt.";
-    }
+      const user = document.cookie.split('name=')[1];
   </script>
 </head>
 <body>
   <div>
+    <button id="logout"> logout </button>
     <h2> Chat with me </h2>
     <textarea id="textArea" rows="4" cols="50">
       </textArea>
@@ -25,12 +23,12 @@ const user = prompt("Please enter your name:", "Harry Potter");
     const subBtn = document.getElementById('subBtn');
     subBtn.onclick = () => {
       const message = document.getElementById('textArea').value;
-      fetch(`/newMessage?name=${user}&message=${message}`).then( r => r.json()).then(messages => {
+      fetch(`/newmessage?name=${user}&message=${message}`).then( r => r.json()).then(messages => {
         render(messages);
     })
     }
     setInterval(()=> 
-      fetch('/getMessages').then( r => r.json() ).then(messages => {
+        fetch('/getMessages', { credentials: 'include'}).then( r => r.json() ).then(messages => {
         render(messages);
       }) 
         , 1000)
@@ -40,9 +38,17 @@ const user = prompt("Please enter your name:", "Harry Potter");
         const chatMessages = document.getElementById('chatMessages') 
           const mappedMessages = messages.map(message => `<div> ${message.name} : ${message.message }</div>`)
           let messageList = '';
-          mappedMessages.forEach(message=> messageList += message)
+        mappedMessages.forEach(message=> messageList += message)
           chatMessages.innerHTML = messageList;
-      }
+    }
+    document.getElementById('logout').onclick = () => {
+      fetch(`/logout`, { credentials: 'include' }).then(data => {
+        if(data.status = 200) {
+          window.location = '/login';
+        }
+    })
+
+    }
   </script>
 </body>
 </html>
