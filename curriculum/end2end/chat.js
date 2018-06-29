@@ -1,12 +1,11 @@
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser');
+const db = require('./8.js');
 // All your code should go here
 
 app.use(cookieParser());
 app.listen(6875, () => console.log('listening on 6875'));
-
-const messages = [];
 
 app.get('/chat', (req, res) => {
   if (!req.cookies.name) {
@@ -25,13 +24,13 @@ app.get('/login', (req, res) => {
 
 app.get('/newMessage', (req, res) => {
   const { name, message } = req.query;
-  messages.push({ name, message });
-  res.json(messages);
+  db.add({ name, message });
+  res.json(db.messages());
 });
 
 app.get('/getMessages', (req, res) => {
   if (req.cookies.name) {
-    return res.json(messages);
+    return res.json(db.messages());
   }
   return res.status(400);
 });
