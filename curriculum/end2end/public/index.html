@@ -5,24 +5,82 @@
   <title></title>
 </head>
 <body>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <div>
-      <label for="file">Choose file to upload</label>
-      <input type="file" id="file" name="file" multiple>
-    </div>
-    <div>
-      <input type="submit" value="Submit">
-    </div>
-  </form>
+  <video width="320" height="240">
+  </video>
   <p/>
-  <div id="filesDiv"/>
+  <button id='snapshot'> Snapshot </button>
+  <canvas hidden>
+  </canvas>
+  <p/>
+  <img/>
+  <div>
+  <button id="upload"> upload </button>
+  </div>
+  <p/>
+  <div id="images"/>
   <script>
-  const filesDiv = document.getElementById('filesDiv');
-  fetch(`/files`)
-  .then( r=> r.json()).then((data) => {
-    const names = data.map(val => `<div> ${val} </div>`).join(''); 
-    filesDiv.innerHTML = names;
-  }).catch(err=> console.log('err', err))
+    // Prefer camera resolution nearest to 1280x720.
+    const constraints = { audio: false, video: { width: 1280, height: 720 } }; 
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(function(mediaStream) {
+        var video = document.querySelector('video');
+        video.srcObject = mediaStream;
+        video.onloadedmetadata = function(e) {
+          video.play();
+        };
+      })
+    .catch(function(err) { console.log(err.name + ": " + err.message); }); // always check for errors at the end.
+    let imageDataURL = '';
+    const takeSnapshot = () => {
+      const  hidden_canvas = document.querySelector('canvas');
+      const video = document.querySelector('video');
+      const image = document.querySelector('img');
+
+      // Get the exact size of the video element.
+      const width = video.width;
+      const height = video.height - 50;
+
+      // Context object for working with the canvas.
+      const context = hidden_canvas.getContext('2d');
+
+      // Set the canvas to the same dimensions as the video.
+      hidden_canvas.width = width;
+      hidden_canvas.height = height;
+
+      // Draw a copy of the current frame from the video on the canvas.
+      context.drawImage(video, 0, 0, width, height);
+
+      // Get an image dataURL from the canvas.
+      imageDataURL = hidden_canvas.toDataURL('image/png');
+
+      // Set the dataURL as source of an image element, showing the captured photo.
+      image.setAttribute('src', imageDataURL); 
+    }
+    document.getElementById('snapshot').onclick = () => {
+      takeSnapshot(); 
+    }
+    document.getElementById('upload').onclick = () => {
+      const url = 'https://deasy.garagescript.org/upload';
+      const photo = imageDataURL;
+      const xhttp = new XMLHttpRequest();
+      xhttp.open('POST', '/upload');
+      xhttp.setRequestHeader('content-type', 'application/json');
+      xhttp.send(JSON.stringify({
+        photo: photo 
+      }));
+     xhttp.onloadend = () => {
+        if (xhttp.responseText) {
+          console.log('received');
+        } 
+     }
+    }
+    const images = document.getElementById('images');
+    fetch(`/images`)
+      .then( r=> r.json()).then((data) => {
+        const photos  = data.map(val => `<img src='/images/${val}'>`).join(''); 
+        images.innerHTML = photos;
+      }).catch(err=> console.log('err', err))
+
   </script>
 </body>
 </html>
