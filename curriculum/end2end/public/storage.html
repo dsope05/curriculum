@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <div>
+      <label for="file">Choose file to upload</label>
+      <input type="file" id="file" name="file" multiple>
+    </div>
+    <div>
+      <input type="submit" value="Submit">
+    </div>
+  </form>
+  <p/>
+  <div id="filesDiv"/>
+  <script>
+  const filesDiv = document.getElementById('filesDiv');
+  fetch(`/files`)
+  .then( r=> r.json()).then((data) => {
+    const names = data.map(val => `<div> ${val} </div>`).join(''); 
+    filesDiv.innerHTML = names;
+  }).catch(err=> console.log('err', err))
+  </script>
+</body>
+</html>
